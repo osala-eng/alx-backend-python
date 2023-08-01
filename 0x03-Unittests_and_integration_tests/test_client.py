@@ -19,7 +19,7 @@ class TestGithubOrgClient(unittest.TestCase):
     def test_org(self, org_name, mock_json):
         """ Test method returns correct output """
         endpoint = 'https://api.github.com/orgs/{}'.format(org_name)
-        spec = GithubOrgClient(data)
+        spec = GithubOrgClient(org_name)
         spec.org()
         mock_json.assert_called_once_with(endpoint)
 
