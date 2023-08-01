@@ -44,6 +44,7 @@ class TestGithubOrgClient(unittest.TestCase):
         """
         with patch('GithubOrgClient._public_repos_url',
                    PropertyMock(return_value=result)):
-            response = GithubOrgClient(name).public_repos()
+            spec = GithubOrgClient(name)
+            response = spec.repos_payload("lic")
             self.assertEqual(response, result.get('repos_url'))
             mock_json.assert_called_once()
