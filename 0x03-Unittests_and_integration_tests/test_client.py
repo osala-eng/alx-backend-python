@@ -1,11 +1,9 @@
 #!/usr/bin/env python3
 """ Unittest module """
-
 import unittest
-from unittest.mock import patch, Mock, PropertyMock
-from parameterized import parameterized
-
 from client import GithubOrgClient
+from unittest.mock import patch, PropertyMock
+from parameterized import parameterized
 
 
 class TestGithubOrgClient(unittest.TestCase):
@@ -34,17 +32,12 @@ class TestGithubOrgClient(unittest.TestCase):
             self.assertEqual(response, result.get('repos_url'))
 
     @parameterized.expand([
-        ("random_url", {"repos_url": "https://some.com"})
+        ("random_url", "https://some.com")
     ])
     @patch('client.get_json')
     def test_public_repos(self, name, result, mock_json):
-        """
-        Test that the list of repos is what you expect
-        from the chosen payload.
-        """
-        with patch('GithubOrgClient._public_repos_url',
-                   PropertyMock(return_value=result)):
-            spec = GithubOrgClient(name)
-            response = spec.repos_payload("lic")
-            self.assertEqual(response, result.get('repos_url'))
-            mock_json.assert_called_once()
+        """Test that the list of repos is what you expect."""
+        with patch('client.GithubOrgClient._public_repos_url') as repos_url:
+            response = GithubOrgClient(name).public_repos()
+            self.assertEqual(response, [])
+            mock_json.assert_called_once_with(repos_url)
