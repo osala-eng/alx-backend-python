@@ -31,13 +31,16 @@ class TestGithubOrgClient(unittest.TestCase):
             response = GithubOrgClient(name)._public_repos_url
             self.assertEqual(response, result.get('repos_url'))
 
-    @parameterized.expand([
-        ("random_url", "https://some.com")
-    ])
     @patch('client.get_json')
-    def test_public_repos(self, name, result, mock_json):
+    def test_public_repos(self, mock_json):
         """Test that the list of repos is what you expect."""
-        with patch('client.GithubOrgClient._public_repos_url') as repos_url:
-            response = GithubOrgClient(name).public_repos()
-            self.assertEqual(response, [])
-            mock_json.assert_called_once_with(repos_url)
+        json_payload = [{"name": "Google"}, {"name": "Yahoo"}]
+        org = "mock"
+        mock_json.return_value = json_payload
+        with patch('client.GithubOrgClient._public_repos_url',
+                   new_callable=PropertyMock) as repos_url:
+            repos_url.return_value = 'hello/world'
+            response = GithubOrgClient(org).public_repos()
+            check = [i["name"] for i in json_payload]
+            self.assertEqual(response, check)
+            mock_json.assert_called_once()
