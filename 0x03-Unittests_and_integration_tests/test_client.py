@@ -34,7 +34,7 @@ class TestGithubOrgClient(unittest.TestCase):
             self.assertEqual(response, result.get('repos_url'))
 
     @parameterized.expand([
-        ("random_url", {"public_repo_url": "https://some.com"})
+        ("random_url", {"repos_url": "https://some.com"})
     ])
     @patch('client.get_json')
     def test_public_repos(self, name, result, mock_json):
@@ -45,5 +45,5 @@ class TestGithubOrgClient(unittest.TestCase):
         with patch('GithubOrgClient._public_repos_url',
                    PropertyMock(return_value=result)):
             response = GithubOrgClient(name).public_repos()
-            self.assertEqual(response, result.get('public_repo_url'))
+            self.assertEqual(response, result.get('repos_url'))
             mock_json.assert_called_once()
